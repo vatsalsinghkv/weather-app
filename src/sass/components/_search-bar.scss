@@ -55,7 +55,7 @@
 		margin-right: 1rem;
 
 		@media only screen and (max-width: $sm-sm) {
-			margin-right: 0.5rem;
+			margin-right: 0.75rem;
 		}
 	}
 
@@ -64,6 +64,11 @@
 		&:link,
 		&:visited {
 			margin-right: 0.75rem;
+
+			@media only screen and (max-width: $sm-sm) {
+				margin-right: 0;
+			}
+
 			font-family: $font-display;
 			font-size: 17px;
 			text-decoration: none;
@@ -75,12 +80,6 @@
 			height: 35px;
 			width: 35px;
 			position: relative;
-
-			@media only screen and (max-width: $sm-sm) {
-				font-size: 16px;
-				height: 30px;
-				width: 30px;
-			}
 
 			transition: all 0.2s;
 			border: none;
@@ -103,10 +102,6 @@
 			&:link,
 			&:visited {
 				font-size: 20px;
-
-				@media only screen and (max-width: $sm-sm) {
-					font-size: 18px;
-				}
 			}
 		}
 	}
