@@ -7,11 +7,11 @@
 	position: relative;
 
 	@media only screen and (max-width: $lg-sm) {
-		padding: 2rem 3rem;
+		padding: 3rem;
 	}
 
 	@media only screen and (max-width: $sm-sm) {
-		padding: 2rem;
+		padding: 3rem 2rem;
 	}
 
 	@media only screen and (max-width: $md) {
@@ -35,10 +35,6 @@
 		@media only screen and (max-width: $md) {
 			margin-top: 1.5rem;
 		}
-
-		@media only screen and (max-width: $md) {
-			// margin-top: 0;
-		}
 	}
 
 	&__break {
@@ -59,6 +55,11 @@
 	&__value {
 		// Font: At least font-size and font-family
 		font: 8.5rem $font-display;
+
+		@media only screen and (max-width: $md) {
+			font-size: 11rem;
+			margin-top: 1.5rem;
+		}
 	}
 
 	&__types.active {
@@ -73,6 +74,11 @@
 		cursor: pointer;
 
 		font: 3rem $font-display;
+
+		@media only screen and (max-width: $md) {
+			font-size: 4rem;
+		}
+
 		color: var(--color-secondary);
 		font-weight: 300;
 		line-height: normal;
