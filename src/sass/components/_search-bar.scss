@@ -32,6 +32,10 @@
 		background: transparent;
 		outline: none;
 
+		@media only screen and (max-width: $sm-sm) {
+			width: 60%;
+		}
+
 		font-size: 16px;
 		color: var(--color-white);
 
@@ -49,6 +53,10 @@
 	&__btn-group {
 		display: flex;
 		margin-right: 1rem;
+
+		@media only screen and (max-width: $sm-sm) {
+			margin-right: 0.5rem;
+		}
 	}
 
 	&__btn {
@@ -67,6 +75,12 @@
 			height: 35px;
 			width: 35px;
 			position: relative;
+
+			@media only screen and (max-width: $sm-sm) {
+				font-size: 16px;
+				height: 30px;
+				width: 30px;
+			}
 
 			transition: all 0.2s;
 			border: none;
@@ -89,6 +103,10 @@
 			&:link,
 			&:visited {
 				font-size: 20px;
+
+				@media only screen and (max-width: $sm-sm) {
+					font-size: 18px;
+				}
 			}
 		}
 	}
