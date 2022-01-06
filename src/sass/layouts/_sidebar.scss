@@ -52,13 +52,16 @@
 	display: flex;
 	align-items: flex-start;
 
+	@media only screen and (max-width: $md) {
+		margin-top: 1.5rem;
+	}
+
 	&__value {
 		// Font: At least font-size and font-family
 		font: 8.5rem $font-display;
 
 		@media only screen and (max-width: $md) {
 			font-size: 11rem;
-			margin-top: 1.5rem;
 		}
 	}
 
