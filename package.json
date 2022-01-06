@@ -1,7 +1,7 @@
 {
 	"name": "weather-app",
 	"version": "1.0.0",
-	"description": "Get current forecast and forecast of next 7 days",
+	"description": "Check the weather for any city in the world, with weather forecast of next 7 days and relevant images of weather.",
 	"type": "module",
 	"scripts": {
 		"start": "parcel index.html",
