@@ -10,6 +10,10 @@
 		padding: 2rem 3rem;
 	}
 
+	@media only screen and (max-width: $sm-sm) {
+		padding: 2rem;
+	}
+
 	@media only screen and (max-width: $md) {
 		height: 100vh;
 		background: var(--bg);

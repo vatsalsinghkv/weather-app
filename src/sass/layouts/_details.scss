@@ -12,6 +12,10 @@
 		padding: 5rem;
 	}
 
+	@media only screen and (max-width: $sm-sm) {
+		padding: 3rem 2rem;
+	}
+
 	@media only screen and (max-width: $md) {
 		padding: 3rem;
 
