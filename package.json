@@ -1,0 +1,21 @@
+{
+	"name": "weather-app",
+	"version": "1.0.0",
+	"description": "Get current forecast and forecast of next 7 days",
+	"type": "module",
+	"scripts": {
+		"start": "parcel index.html",
+		"build": "parcel build index.html --dist-dir ./dist"
+	},
+	"author": "Vatsal Singh <vatsalsinghkv@gmail.com>",
+	"license": "MIT",
+	"dependencies": {
+		"@parcel/resolver-glob": "^2.0.1",
+		"@parcel/transformer-image": "^2.0.1",
+		"dotenv": "^10.0.0"
+	},
+	"devDependencies": {
+		"@parcel/transformer-sass": "^2.0.1",
+		"parcel": "^2.0.1"
+	}
+}
