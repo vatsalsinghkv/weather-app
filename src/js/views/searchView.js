@@ -42,6 +42,8 @@ class SearchView {
 	 */
 
 	_clear() {
+		$('.search-bar')[0].blur();
+		this._searchEl[0].blur();
 		this._searchEl.val('');
 	}
 }
