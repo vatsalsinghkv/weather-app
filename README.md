@@ -1,6 +1,3 @@
-<!-- <a href="https://devchallenges.io/challenges/mM1UIenRhK808W8qmLWv"> -->
-<!-- <h1 align="center">Weather App</h1> -->
-
 # Weather App
 
 ## Table of Contents
@@ -209,4 +206,5 @@ js
 - [Steps to replicate a design with only HTML and CSS](https://devchallenges-blogs.web.app/how-to-replicate-design/)
 - [How to build a web app: A beginner's guide](https://budibase.com/blog/how-to-make-a-web-app/)
 - [autoprefixer](https://www.npmjs.com/package/autoprefixer)
+- [Inspiration](https://devchallenges.io/challenges/mM1UIenRhK808W8qmLWv)
 - [Mentor](https://github.com/pandresvaldivia/Weather-app)
