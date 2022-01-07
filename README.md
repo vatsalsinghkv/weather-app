@@ -87,7 +87,7 @@ I've learned lot of stuff in this challenge:
 
 - Sass Architecture
 
-```js
+```bash
 sass
 ├── abstract
 │   ├── _mixins.scss
@@ -112,7 +112,7 @@ sass
 
 - MVC Architecture
 
-```js
+```bash
 js
 ├── config.js
 ├── controller.js
