@@ -167,8 +167,8 @@ js
 
 ```json
 "scripts": {
-		"start": "parcel index.html",
-		"build": "parcel build index.html --dist-dir ./dist"
+  "start": "parcel index.html",
+  "build": "parcel build index.html --dist-dir ./dist"
 },
 "dependencies": {
   "@parcel/transformer-image": "^2.0.1",
