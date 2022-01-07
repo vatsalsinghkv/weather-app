@@ -37,29 +37,32 @@ const refineForecastData = data => {
  * @returns {object} Latitude (lat) & Longitude (lon)
  */
 
-const getCurrentLocation = async function () {
-	try {
-		const {
-			coords: { latitude: lat, longitude: lon },
-		} = await new Promise((res, rej) => {
-			navigator.geolocation.getCurrentPosition(res, rej);
-		});
+const getCurrentLocation = function () {
+	navigator.geolocation.getCurrentPosition(
+		// Success
+		location => {
+			const {
+				coords: { latitude: lat, longitude: lon },
+			} = location;
 
-		const data = await FETCH(
-			`${API_GEOLOCATION}${lon},${lat}.json?access_token=${TOKEN}&limit=1`
-		);
+			const data = await FETCH(
+				`${API_GEOLOCATION}${lon},${lat}.json?access_token=${TOKEN}&limit=1`
+			);
 
-		const places = data.features[0].context;
-		const place = places[0].text;
+			const places = data.features[0].context;
+			const place = places[0].text;
 
-		state.location.name = place;
-		state.location.lat = lat;
-		state.location.lon = lon;
-		return { lat, lon };
-	} catch (err) {
-		console.error(err);
-		return { lat: state.location.lat, lon: state.location.lon };
-	}
+			state.location.name = place;
+			state.location.lat = lat;
+			state.location.lon = lon;
+			return { lat, lon };
+		},
+		// Error
+		() => {
+			console.log(`Couldn't get the your location`);
+			return { lat: state.location.lat, lon: state.location.lon };
+		}
+	);
 };
 
 /**

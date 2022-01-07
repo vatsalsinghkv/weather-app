@@ -24,7 +24,7 @@ const controlForecast = async function (location = '') {
 		searchView._clear();
 
 		if (!location) {
-			const { lat, lon } = await model.getCurrentLocation();
+			const { lat, lon } = model.getCurrentLocation();
 			await model.forecast(lat, lon);
 		} else {
 			const { lat, lon } = await model.geocode(location);
@@ -47,9 +47,13 @@ const controlForecast = async function (location = '') {
 	}
 };
 
+/**
+ * Controls when user changes temp type
+ * @param {Object | Node} clicked
+ */
+
 const controlTempTypes = function (clicked) {
 	if (clicked.classList.contains('active')) return;
-	console.log('working');
 
 	$('.active').removeClass('active');
 	clicked.classList.add('active');
@@ -62,6 +66,10 @@ const controlTempTypes = function (clicked) {
 		detailView.render(state.forecast[0]);
 	}
 };
+
+/**
+ * Controls when user search for a location
+ */
 
 const controlSearch = async function () {
 	try {
