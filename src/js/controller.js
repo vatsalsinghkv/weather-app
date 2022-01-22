@@ -49,7 +49,8 @@ const controlForecast = async function (location = '') {
 			await model.forecast(lat, lon);
 		}
 
-		await model.setTemp();
+		// Getting Min and Max temp in F
+		model.setTemp();
 
 		renderForecast();
 	} catch (err) {

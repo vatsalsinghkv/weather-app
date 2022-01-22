@@ -70,6 +70,14 @@ const getCurrentLocation = async function () {
 		return { lat, lon };
 	} catch (err) {
 		console.error(err);
+
+		const data = await FETCH(
+			`${API_INITIAL_FORECAST}?lat=${state.location.lat}&lon=${state.location.lon}&units=metric&appid=${API_KEY}`
+		);
+
+		tempMin = data.main.temp_min;
+		tempMax = data.main.temp_max;
+
 		return { lat: state.location.lat, lon: state.location.lon };
 	}
 };
@@ -87,9 +95,9 @@ const setTemp = async function setCurrMinMaxTemp(units = 'imperial') {
 			`${API_INITIAL_FORECAST}?lat=${lat}&lon=${lon}&units=${units}&appid=${API_KEY}`
 		);
 
-		console.log(state);
-
 		const { temp_min, temp_max } = data.main;
+
+		// await forecast(lat, lon, 'imperial');
 
 		const temp = {
 			day: state.forecast[1].current.temp.day,
@@ -99,7 +107,7 @@ const setTemp = async function setCurrMinMaxTemp(units = 'imperial') {
 
 		state.forecast[1].current.temp = temp;
 	} catch (err) {
-		throw err;
+		console.error(err);
 	}
 };
 
@@ -153,7 +161,7 @@ const forecast = async function (lat, lon, units = 'metric') {
 		if (state.forecast.length >= 2) state.forecast.length = 0;
 		state.forecast.push(refineForecastData(data));
 
-		if (units === 'metric') forecast(lat, lon, 'imperial');
+		if (units === 'metric') await forecast(lat, lon, 'imperial');
 	} catch (err) {
 		throw err;
 	}
