@@ -2,7 +2,7 @@
 
 .details {
 	flex: 1;
-	padding: 10rem;
+	padding: 10rem 8rem;
 
 	backdrop-filter: blur(30px) brightness(120%);
 	position: relative;
@@ -96,9 +96,23 @@
 
 .day {
 	font-size: 1.6rem;
+	cursor: pointer;
+	padding: 0.5rem 0;
 
 	:not(:last-child) {
 		margin-right: 0.75rem;
+	}
+
+	&.active {
+		background: var(--color-tertiary);
+		border-radius: 0.75rem;
+		box-shadow: 0 0.5rem 2rem rgba(#000, 0.1);
+	}
+
+	&:hover {
+		background: var(--color-tertiary);
+		border-radius: 0.75rem;
+		box-shadow: 0 0.5rem 2rem rgba(#000, 0.1);
 	}
 
 	@media only screen and (max-width: $md) {

@@ -5,7 +5,7 @@ MODEl
 -> HTTP Requests (API Data)
 */
 
-import { API_KEY, API_FORECAST, API_GEOLOCATION, TOKEN } from './config';
+import { API_KEY, API_FORECAST, API_INITIAL_FORECAST } from './config';
 import { FETCH } from './helper';
 
 const state = {
@@ -15,7 +15,11 @@ const state = {
 		lon: 77.2,
 	},
 	forecast: [],
+	currentDay: 0,
 };
+
+let tempMin = 0;
+let tempMax = 0;
 
 /**
  * Returns the data after removing irrelevant information
@@ -24,9 +28,17 @@ const state = {
  */
 
 const refineForecastData = data => {
+	const temp = {
+		day: data.current.temp,
+		min: tempMin,
+		max: tempMax,
+	};
+
+	data.current.temp = temp;
+
 	return {
 		current: data.current,
-		daily: data.daily,
+		daily: [data.current, ...data.daily],
 		units: data.units,
 	};
 };
@@ -37,56 +49,81 @@ const refineForecastData = data => {
  * @returns {object} Latitude (lat) & Longitude (lon)
  */
 
-const getCurrentLocation = function () {
-	navigator.geolocation.getCurrentPosition(
-		// Success
-		location => {
-			const {
-				coords: { latitude: lat, longitude: lon },
-			} = location;
+const getCurrentLocation = async function () {
+	try {
+		const {
+			coords: { latitude: lat, longitude: lon },
+		} = await new Promise((res, rej) => {
+			navigator.geolocation.getCurrentPosition(res, rej);
+		});
 
-			const data = await FETCH(
-				`${API_GEOLOCATION}${lon},${lat}.json?access_token=${TOKEN}&limit=1`
-			);
+		const data = await FETCH(
+			`${API_INITIAL_FORECAST}?lat=${lat}&lon=${lon}&units=metric&appid=${API_KEY}`
+		);
 
-			const places = data.features[0].context;
-			const place = places[0].text;
+		tempMin = data.main.temp_min;
+		tempMax = data.main.temp_max;
 
-			state.location.name = place;
-			state.location.lat = lat;
-			state.location.lon = lon;
-			return { lat, lon };
-		},
-		// Error
-		() => {
-			console.log(`Couldn't get the your location`);
-			return { lat: state.location.lat, lon: state.location.lon };
-		}
-	);
+		state.location.lat = lat;
+		state.location.lon = lon;
+		state.location.name = data.name;
+		return { lat, lon };
+	} catch (err) {
+		console.error(err);
+		return { lat: state.location.lat, lon: state.location.lon };
+	}
 };
 
 /**
- * Returns the latitude & longitude of the given location
+ * Sets min & max temp of imperial type in state
  * @async
- * @param {String} addr - Address | Location
+ * @param {String} [units='imperial'] imperial
+ */
+
+const setTemp = async function setCurrMinMaxTemp(units = 'imperial') {
+	try {
+		const { lat, lon } = state.location;
+		const data = await FETCH(
+			`${API_INITIAL_FORECAST}?lat=${lat}&lon=${lon}&units=${units}&appid=${API_KEY}`
+		);
+
+		console.log(state);
+
+		const { temp_min, temp_max } = data.main;
+
+		const temp = {
+			day: state.forecast[1].current.temp.day,
+			min: temp_min,
+			max: temp_max,
+		};
+
+		state.forecast[1].current.temp = temp;
+	} catch (err) {
+		throw err;
+	}
+};
+
+/**
+ * Returns the lat & lon of the given location and also fetch min & max temp
+ * @async
+ * @param {String} addr Location | City Name
+ * @param {String} [units="metric"] imperial | metric
  * @returns {Object} Latitude (lat) & Longitude (lon)
  */
 
-const geocode = async function (addr) {
+const initForecast = async function initialForecast(addr, units = 'metric') {
 	try {
 		const data = await FETCH(
-			`${API_GEOLOCATION}${addr}.json?access_token=${TOKEN}&limit=1`
+			`${API_INITIAL_FORECAST}?q=${addr}&units=${units}&appid=${API_KEY}`
 		);
 
-		if (!data.features.length) throw new Error('Invalid Location');
+		const { lat, lon } = data.coord;
+		tempMin = data.main.temp_min;
+		tempMax = data.main.temp_max;
 
-		const location = data.features[0];
-		const [lon, lat] = [...location.center];
-
-		state.location.name = location.place_name;
-		// state.location.name = location.text;
 		state.location.lat = lat;
 		state.location.lon = lon;
+		state.location.name = data.name;
 
 		return { lat, lon };
 	} catch (err) {
@@ -96,12 +133,16 @@ const geocode = async function (addr) {
 
 /**
  * Gets forecast of the given latitude & longitude
- * @param {Number} lat - Latitude of the location
- * @param {Number} lon - Longitude of the location
+ * @async
+ * @param {Number} lat Latitude of the location
+ * @param {Number} lon Longitude of the location
+ * @param {String} [units="metric"] metric | imperial
  */
 
 const forecast = async function (lat, lon, units = 'metric') {
 	try {
+		state.currentDay = 0;
+
 		// Can throw Error
 		const data = await FETCH(
 			`${API_FORECAST}?lat=${lat}&lon=${lon}&exclude=minutely,hourly&appid=${API_KEY}&units=${units}`
@@ -118,4 +159,4 @@ const forecast = async function (lat, lon, units = 'metric') {
 	}
 };
 
-export { getCurrentLocation, forecast, geocode, state };
+export { getCurrentLocation, forecast, initForecast, setTemp, state };

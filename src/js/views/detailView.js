@@ -3,6 +3,16 @@ import View from './view';
 
 class DetailView extends View {
 	_parentEl = $('.details__content');
+	_dayIndex = 0;
+
+	addDayHandler(handler) {
+		this._parentEl.on('click', e => {
+			const dayEl = e.target.closest('.day');
+			if (dayEl) {
+				handler(dayEl);
+			}
+		});
+	}
 
 	_timeFormatter(date) {
 		return new Intl.DateTimeFormat(this._getLocale(), {
@@ -12,11 +22,12 @@ class DetailView extends View {
 	}
 
 	_getMarkup() {
-		const { current, daily, units } = this.data;
+		const { current, daily, units, currentDay } = this.data;
+		this._dayIndex = currentDay;
 
 		return `
     ${this.#getCurrentDayMarkup(current, units)}
-    ${this.#getNextDaysMarkup(daily.slice(0, -1))}
+    ${this.#getNextDaysMarkup(daily.slice(0, -2))}
     `;
 	}
 
@@ -38,7 +49,16 @@ class DetailView extends View {
 				'sunrise',
 				this._timeFormatter(new Date(sunrise))
 			)}
-      ${this.#getWeatherDetailsMarkup('visibility', visibility, 'm')}
+
+			${
+				visibility
+					? this.#getWeatherDetailsMarkup('visibility', visibility, 'm')
+					: this.#getWeatherDetailsMarkup(
+							'Feels Like',
+							current.feels_like.day,
+							'°'
+					  )
+			}
       ${this.#getWeatherDetailsMarkup('air pressure', pressure, 'hPa')}
       ${this.#getWeatherDetailsMarkup(
 				'sunset',
@@ -70,12 +90,11 @@ class DetailView extends View {
       ${days
 				.map((day, i) => {
 					return this.#getDayMarkup({
-						day: getDay(
-							new Date(new Date().setDate(new Date().getDate() + i + 1))
-						),
+						day: getDay(new Date(new Date().setDate(new Date().getDate() + i))),
 						min: day.temp.min,
 						max: day.temp.max,
 						icon: this._getIcon(day.weather[0].id),
+						index: i,
 					});
 				})
 				.join('')}
@@ -84,9 +103,11 @@ class DetailView extends View {
     `;
 	}
 
-	#getDayMarkup({ day, min, max, icon }) {
+	#getDayMarkup({ day, min, max, icon, index }) {
 		return `
-  <div class="day">
+  <div class="day ${
+		this._dayIndex == index ? 'active' : ''
+	}" data-day="${index}">
     <h5 class="day--name">${day}</h5>
     <img
       src="${icon}"

@@ -52,11 +52,11 @@ class SidebarView extends View {
 	}
 
 	_getMarkup() {
-		const { temp, location, weather_status, weather_id } = this.data;
+		const { temp, location, weather_status, weather_id, dt } = this.data;
 
 		return `
     <div class="temp">
-      <h1 class="temp__value">${Math.round(temp)}</h1>
+      <h1 class="temp__value">${Math.round(temp?.day ?? temp)}</h1>
       <div class="temp__type">
         <p class="temp__type--c temp__types active">°C</p>
         <p class="temp__type--f temp__types">°F</p>
@@ -77,7 +77,9 @@ class SidebarView extends View {
     <div class="info">
       <p class="location heading-primary--sub">${location}</p>
       <p class="date heading-tertiary heading-tertiary--white">
-        ${this._dateFormatter(new Date())}
+        ${this._dateFormatter(
+					new Date(new Date().setDate(new Date().getDate() + dt))
+				)}
       </p>
     </div>
     `;
