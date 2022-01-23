@@ -44,6 +44,28 @@ const refineForecastData = data => {
 };
 
 /**
+ * Set the value of tempMin & tempMax of given lat & lon in global scope of model
+ * @param {Number} [lat] Latitude
+ * @param {Number} [lon] Longitude
+ * @param {Boolean} [setLocationName=False] True - It update location name in state of current lat & lon
+ */
+
+const setTempMinMax = async function (
+	lat = state.location.lat,
+	lon = state.location.lon,
+	setLocationName = false
+) {
+	const data = await FETCH(
+		`${API_INITIAL_FORECAST}?lat=${lat}&lon=${lon}&units=metric&appid=${API_KEY}`
+	);
+
+	tempMin = data.main.temp_min;
+	tempMax = data.main.temp_max;
+
+	if (setLocationName) state.location.name = data.name;
+};
+
+/**
  * Get current location coordinates of the user
  * @async
  * @returns {object} Latitude (lat) & Longitude (lon)
@@ -57,38 +79,28 @@ const getCurrentLocation = async function () {
 			navigator.geolocation.getCurrentPosition(res, rej);
 		});
 
-		const data = await FETCH(
-			`${API_INITIAL_FORECAST}?lat=${lat}&lon=${lon}&units=metric&appid=${API_KEY}`
-		);
-
-		tempMin = data.main.temp_min;
-		tempMax = data.main.temp_max;
+		setTempMinMax(lat, lon, true);
 
 		state.location.lat = lat;
 		state.location.lon = lon;
-		state.location.name = data.name;
+
 		return { lat, lon };
 	} catch (err) {
 		console.error(err);
 
-		const data = await FETCH(
-			`${API_INITIAL_FORECAST}?lat=${state.location.lat}&lon=${state.location.lon}&units=metric&appid=${API_KEY}`
-		);
-
-		tempMin = data.main.temp_min;
-		tempMax = data.main.temp_max;
+		setTempMinMax();
 
 		return { lat: state.location.lat, lon: state.location.lon };
 	}
 };
 
 /**
- * Sets min & max temp of imperial type in state
+ * Sets min & max temp of imperial (F) type in state
  * @async
  * @param {String} [units='imperial'] imperial
  */
 
-const setTemp = async function setCurrMinMaxTemp(units = 'imperial') {
+const setTemp = async function setMinMaxTempF(units = 'imperial') {
 	try {
 		const { lat, lon } = state.location;
 		const data = await FETCH(
@@ -161,10 +173,14 @@ const forecast = async function (lat, lon, units = 'metric') {
 		if (state.forecast.length >= 2) state.forecast.length = 0;
 		state.forecast.push(refineForecastData(data));
 
-		if (units === 'metric') await forecast(lat, lon, 'imperial');
+		if (units === 'metric') {
+			await forecast(lat, lon, 'imperial');
+			// Getting Min and Max temp in F
+			setTemp();
+		}
 	} catch (err) {
 		throw err;
 	}
 };
 
-export { getCurrentLocation, forecast, initForecast, setTemp, state };
+export { getCurrentLocation, forecast, initForecast, state };
