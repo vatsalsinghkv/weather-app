@@ -50,7 +50,7 @@ class DetailView extends View {
 				this._timeFormatter(new Date(sunrise))
 			)}
 
-			${
+      ${
 				visibility
 					? this.#getWeatherDetailsMarkup('visibility', visibility, 'm')
 					: this.#getWeatherDetailsMarkup(
